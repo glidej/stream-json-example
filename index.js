@@ -74,11 +74,11 @@ const getNextLine = async (index) => {
 
 app.use(express.static('public'))
 
-app.get('/api/regular', async (req, res) => {
+app.get('/api/regular', async (req, res) => { // returns regular JSON a stream
     res.write('[');
 
     for (let i=0;i<people.length;i++) {
-        const line = await getNextLine(i);
+        const line = await getNextLine(i); // this takes 250ms for each item
         if (i === people.length - 1) {
             res.write(`${JSON.stringify(line)}`);
         } else {
@@ -90,12 +90,12 @@ app.get('/api/regular', async (req, res) => {
     res.end();
 })
 
-app.get('/api/stream', async (req, res) => {
+app.get('/api/stream', async (req, res) => { // returns NDJSON (newline-delimited JSON) in a stream
     for (let i=0;i<people.length;i++) {
         const line = await getNextLine(i);
-        res.write(`${JSON.stringify(line)}\n`);
+        res.write(`${JSON.stringify(line)}\n`); // incrementally write the json object to the stream over time
     }
-    res.end();
+    res.end(); // eventually, close the stream
 })
 
 app.listen(port, () => console.log(`Example app listening on port ${port}!`))

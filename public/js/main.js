@@ -27,12 +27,14 @@ const getStreamingRows = async () =>  {
               return null
             }
 
+            // this is an optimistic parse. a real app might have to incrementally build a string up until it's useful
+            // in this example, for time, i've made sure the /stream endpoint returns a valid row of JSON each time
             return JSON.parse(item);
           })
 
           rows.map(createListItem);
 
-          return pump();
+          return pump(); // recursively `pump` the stream until done comes back.
         });
       }
 
